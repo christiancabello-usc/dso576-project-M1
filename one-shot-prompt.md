@@ -307,5 +307,5 @@ def load_defaults(path: Path = Path("configs/default.toml")) -> Defaults: ...
 
 ### Done when
 
-1. `load_defaults()` on the default file returns `Defaults("Mission", date(2025, 2, 1), date(2026, 7, 31))`.
+1. `load_defaults()` returns dates and an Area that passes validation; on the prepared data, the default Area equals the first row of the Area Summary for its configured window.
 2. A test file with `default_area = "Hollywod"` raises a `ValueError` whose message contains `Hollywod`; one with `start = 2024-06-01` raises one naming `start`.

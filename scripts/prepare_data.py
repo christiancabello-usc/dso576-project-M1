@@ -37,10 +37,10 @@ def main():
     offenses = load_offenses(RAW)
     defaults = load_defaults(ROOT / 'configs/default.toml')
     summary = summarize_areas(offenses, defaults.start, defaults.end)
-    # Keep all report dates and occurrence times for the two risk codes so config edits work.
+    # Keep both dates and occurrence times for the two risk codes so period edits work.
     # Case identifiers, addresses and coordinates have no role in this product.
     compact = offenses.loc[offenses['NIBR Code'].isin(RISK_CODES),
-        ['Date Rptd','Time OCC','AREA','AREA NAME','RPT Dist No','NIBR Code']].copy()
+        ['Date Rptd','Date OCC','Time OCC','AREA','AREA NAME','RPT Dist No','NIBR Code']].copy()
     compact.attrs = {}
     compact.to_parquet(OUT / 'offenses.parquet', index=False)
     monthly = offenses['Date Rptd'].dt.to_period('M').value_counts().sort_index()
