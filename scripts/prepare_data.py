@@ -24,17 +24,22 @@ OUT = ROOT / 'data/processed'
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--refresh', action='store_true')
+    parser.add_argument('--source', type=Path,
+                        help='Use an existing local LAPD offenses CSV instead of data/raw/.')
     args = parser.parse_args()
     RAW.parent.mkdir(parents=True, exist_ok=True)
     OUT.mkdir(parents=True, exist_ok=True)
-    if args.refresh or not RAW.exists():
+    source = args.source if args.source else RAW
+    if args.source and not source.is_file():
+        parser.error(f'--source does not name a file: {source}')
+    if not args.source and (args.refresh or not RAW.exists()):
         request = urllib.request.Request(URL, headers={'User-Agent': 'Mozilla/5.0'})
         temporary = RAW.with_suffix('.part')
         with urllib.request.urlopen(request, timeout=180) as response, temporary.open('wb') as handle:
             while block := response.read(1024 * 1024):
                 handle.write(block)
         temporary.replace(RAW)
-    offenses = load_offenses(RAW)
+    offenses = load_offenses(source)
     defaults = load_defaults(ROOT / 'configs/default.toml')
     summary = summarize_areas(offenses, defaults.start, defaults.end)
     # Keep both dates and occurrence times for the two risk codes so period edits work.
@@ -51,10 +56,10 @@ def main():
     next_median = float(pd.Series(next_previous).median())
     metadata = {
         'source_url': URL,
-        'download_date': datetime.fromtimestamp(RAW.stat().st_mtime, timezone.utc).date().isoformat(),
+        'download_date': datetime.fromtimestamp(source.stat().st_mtime, timezone.utc).date().isoformat(),
         'prepared_at': datetime.now(timezone.utc).isoformat(),
-        'source_bytes': RAW.stat().st_size,
-        'source_sha256': hashlib.file_digest(RAW.open('rb'), 'sha256').hexdigest(),
+        'source_bytes': source.stat().st_size,
+        'source_sha256': hashlib.file_digest(source.open('rb'), 'sha256').hexdigest(),
         'quality': offenses.attrs['quality'], 'condensed_rows': len(compact),
         'monthly_report_counts': {str(k): int(v) for k,v in monthly.items()},
         'configuration_check': {

@@ -4,7 +4,7 @@ from src.setup import load_defaults
 
 def test_default_dates():
     defaults = load_defaults()
-    assert defaults.start == date(2025,2,1) and defaults.end == date(2026,9,30)
+    assert defaults.start == date(2025,2,1) and defaults.end == date(2026,7,31)
 
 @pytest.mark.parametrize('content,match', [
  ('default_area="Hollywod"\nstart="2025-02-01"\nend="2026-07-31"','Hollywod'),
