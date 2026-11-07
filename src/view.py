@@ -55,7 +55,7 @@ def select_controls(defaults: Defaults, area_summary: pd.DataFrame) -> tuple[lis
         st.header('Evening allocation')
         options = sorted(area_summary['AREA NAME'].tolist())
         selected = st.multiselect('LAPD Areas', options, default=[defaults.default_area],
-                                  help='Choose one Area for its top 10, or several Areas for one combined top-five shortlist.')
+                                  help='Choose one Area or several Areas for one combined top-10 ranking.')
         if not selected:
             st.warning('Select at least one LAPD Area.')
         periods = period_options(defaults)
@@ -143,7 +143,7 @@ def render_results(ranked: pd.DataFrame, area_summary: pd.DataFrame, selected_ar
                      hide_index=True, width='stretch',
                      column_config={'combined_incidents': 'Raw combined offenses', 'mapped_CVS_stores': 'Mapped CVS stores',
                                     'offenses_per_mapped_CVS_store': st.column_config.NumberColumn('Offenses per mapped CVS store', format='%.2f')})
-    top_count = 10 if len(selected_areas) == 1 else 5
+    top_count = 10
     st.markdown(f'**Red marks the first five priority districts** · ordered by **{measure.lower()}**. Counts are charged offense rows, not distinct reports.')
     left, right = st.columns([1.15, 1], gap='large')
     with left:

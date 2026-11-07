@@ -102,7 +102,7 @@ A filled request (from the class lottery app):
 - **Evidence:** The app’s single-Area selection prevents managers from seeing one prioritized district list across multiple Areas. Comparing separate rankings manually makes it harder to allocate guards across Area boundaries.
 - **Change:** Allow managers to select multiple Areas and rank the top five districts overall across those selections, using the chosen reporting period and ranking measure. Show each district’s Area and offense breakdown, and label the results as a combined ranking.
 - **Priority:** medium
-- **Status:** built — multi-select Areas now produces one cross-Area top-five list with Area, district, offense breakdown, selected measure, and export context.
+- **Status:** built — multi-select Areas now produces one cross-Area top-10 list with Area, district, offense breakdown, selected measure, and export context; the first five remain the priority shortlist.
 
 ### CR-08: Show Area offense totals without hover
 - **From:** Christian Cabello, 2026-10-25

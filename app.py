@@ -26,7 +26,7 @@ def main():
     areas = area_summary(offenses, start, end)
     combined = len(selected) > 1
     districts = rank_districts(filter_offenses(offenses, selected, start, end),
-                               k=5 if combined else 10, measure=measure,
+                               k=10, measure=measure,
                                include_area=combined or mapping is not None)
     render_results(attach_candidate_stores(districts, mapping), areas, selected, start, end,
                    measure, metadata, mapping)

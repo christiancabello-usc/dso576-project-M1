@@ -24,7 +24,7 @@ def test_screen_supports_multi_area_ranking_and_export():
     app.multiselect[0].set_value(['Topanga', 'Mission']).run(timeout=30)
     assert not app.exception
     ranked = app.dataframe[-1].value
-    assert len(ranked) == 5
+    assert len(ranked) == 10
     assert 'AREA NAME' in ranked
     exported = pd.read_csv(BytesIO(export_ranked_table(
         ranked, ['Topanga', 'Mission'], date(2026, 7, 1), date(2026, 9, 30), 'Combined offenses')))
