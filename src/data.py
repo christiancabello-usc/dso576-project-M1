@@ -38,8 +38,14 @@ def load_offenses(path: str | Path) -> pd.DataFrame:
     return offenses
 
 @st.cache_data(show_spinner=False)
-def load_prepared(path: str | Path, metadata_path: str | Path) -> tuple[pd.DataFrame, dict]:
-    """Read the committed privacy-minimized snapshot, once per application cache."""
+def load_prepared(path: str | Path, metadata_path: str | Path,
+                  snapshot_version: tuple[int, int] | None = None) -> tuple[pd.DataFrame, dict]:
+    """Read the committed privacy-minimized snapshot, once per file version.
+
+    ``snapshot_version`` is the two file modification times supplied by the
+    app. It prevents a running Streamlit server from reusing a cached older
+    schema after the prepared snapshot is refreshed.
+    """
     import json
     with Path(metadata_path).open() as handle:
         metadata = json.load(handle)

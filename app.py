@@ -15,7 +15,10 @@ def area_summary(offenses, start, end):
 
 def main():
     defaults = load_defaults(ROOT / 'configs/default.toml')
-    offenses, metadata = load_prepared(ROOT / 'data/processed/offenses.parquet', ROOT / 'data/processed/metadata.json')
+    prepared = ROOT / 'data/processed/offenses.parquet'
+    metadata_path = ROOT / 'data/processed/metadata.json'
+    snapshot_version = (prepared.stat().st_mtime_ns, metadata_path.stat().st_mtime_ns)
+    offenses, metadata = load_prepared(prepared, metadata_path, snapshot_version)
     initial_areas = area_summary(offenses, defaults.start, defaults.end)
     selected, measure, start, end, mapping = select_controls(defaults, initial_areas)
     if not selected:
