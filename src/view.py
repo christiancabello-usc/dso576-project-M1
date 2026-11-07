@@ -121,7 +121,12 @@ def render_results(ranked: pd.DataFrame, area_summary: pd.DataFrame, selected_ar
                    mapping: pd.DataFrame | None) -> None:
     st.title('Evening Loss-Prevention Navigator')
     selected_summary = area_summary.loc[area_summary['AREA NAME'].isin(selected_areas)]
-    scope = selected_areas[0] if len(selected_areas) == 1 else f'Combined ranking · {", ".join(selected_areas)}'
+    if len(selected_areas) == 1:
+        scope = selected_areas[0]
+    elif len(selected_areas) == len(area_summary):
+        scope = 'Combined ranking · all districts'
+    else:
+        scope = f'Combined ranking · {", ".join(selected_areas)}'
     st.subheader(f'{scope} · district priorities')
     st.caption(f'{start:%b %d, %Y} – {end:%b %d, %Y} · Occurrence date · Shoplifting 23C + robbery 120')
     metric_columns = st.columns(3)
