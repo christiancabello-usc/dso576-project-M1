@@ -45,9 +45,9 @@ Elena could wrongly conclude from the high aggregate evening ranking that distri
 # Check on hourly distribution for district 0161
 df_0161 = df[(df['Rpt Dist No'] == 1201) & (df['Hour'].between(22, 23))]
 print(f"Late night offenses (22:00-24:00): {len(df_0161)}")
-# Output: 0
+```
 
-**The verdict: prove or break**
+** The verdict: prove or break **
 Elena is not better off using the current default aggregate ranking to decide store hours, as it can mislead her into drawing the exact opposite conclusion of what the late-night safety reality demands.
 Change Request (CR-12 & CR-13):
 - CR-12: Proposes introducing a part-of-evening filter/control and displaying a visible late-evening column to separate 18:00–21:59 from 22:00–24:00.
