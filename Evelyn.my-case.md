@@ -21,7 +21,8 @@ Elena determines store hours by evaluating internal store sales and incident log
 - Ranking measure: Combined offenses
 - Optional verified store mapping: None uploaded
 
-![Central District Selection and Rankings](screenshots/case-elena-1.png)
+![Central District Selection and Rankings](<img width="286" height="371" alt="case-elena-1" src="https://github.com/user-attachments/assets/d259f389-f234-4c93-aa7d-5a4c9e2c62e1" />
+)
 
 **What they see:** 
 The live app shows that the Central area accumulated 103 shoplifting, 221 robbery, and 324 combined evening rows, with district 0161 ranked first overall with 59 shoplifting, 10 robbery, and 69 combined offenses. 
