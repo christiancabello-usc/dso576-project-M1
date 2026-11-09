@@ -24,7 +24,7 @@ Without the app, Rita could review internal incident logs, speak with employees 
 
 **Live-app evidence:** Screenshot captured with Wilshire selected, July 1–31, 2026 occurrence dates, Combined offenses ranking, and the reporting-district table visible.
 
-![Live-app screenshot of Rita's verified LAPD area and evening district ranking — INSERT ACTUAL SCREENSHOT](screenshots/rita-wilshire-live.png)
+![Live-app screenshot of Rita's verified LAPD area and evening district ranking(screenshots/rita-wilshire-live.png)
 
 
 **What Rita sees:** For Wilshire during July 1–31, 2026, the app displays 30 shoplifting offense rows and 4 robbery offense rows, totaling 34 combined rows. Reporting district 0724 ranks first with 14 shoplifting rows, 0 robbery rows, and 14 combined rows. These district-level figures do not establish that Rita’s CVS experienced these incidents, and no verified CVS store mapping is loaded.
