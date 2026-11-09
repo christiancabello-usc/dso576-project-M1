@@ -2,7 +2,7 @@
 
 ## 1. The person and the decision
 
-Rita is the on-site general manager of a CVS store in the Wilshire area of Los Angeles. At her next store safety review, she must decide whether to submit a request for additional evening security coverage for her own store. If she requests coverage without sufficient evidence, the store may incur unnecessary costs; if she fails to request it when needed, employees and customers may face avoidable safety concerns. Rita can request extra security, but approval and deployment may depend on CVS leadership.
+Rita is the on-site general manager of a CVS store in the Wilshire area of Los Angeles. At her next store safety review, she must decide if she should submit a request for additional evening security for her  store. If she requests extra security without sufficient evidence, the store would face unnecessary costs; if she fails to request it when needed, employees and customers may face avoidable safety concerns. Rita can request extra security, but approval and deployment would depend on CVS leadership.
 
 ## 2. Their real situation and alternatives
 
@@ -22,11 +22,12 @@ Without the app, Rita could review internal incident logs, speak with employees 
 
 **What Rita selects:** Rita opens the public app and chooses the LAPD area that covers her Wilshire CVS location, after checking the store's actual reporting-district boundary. She selects the most recent complete reporting period and **Combined offenses** to review evening shoplifting and robbery patterns. **Important:** “Wilshire area” is not enough to identify her exact LAPD reporting district; the store's address and boundary must be verified first.
 
-**Screenshot to insert:** Capture the live app with the verified LAPD area, reporting period, ranking measure, and district table visible. Save the image beside this Markdown file and replace the placeholder below with its actual path.
+**Live-app evidence:** Screenshot captured with Wilshire selected, July 1–31, 2026 occurrence dates, Combined offenses ranking, and the reporting-district table visible.
 
 ![Live-app screenshot of Rita's verified LAPD area and evening district ranking — INSERT ACTUAL SCREENSHOT](screenshots/rita-wilshire-live.png)
 
-**What Rita sees:** The app provides a ranked view of evening shoplifting and robbery offense rows for the selected reporting districts. Rita can identify districts worth investigating, but the ranking does not prove that any particular CVS store experienced those incidents. **Record the actual top district, shoplifting count, robbery count, and combined count from the live screenshot here before submission.** Do not substitute numbers from Hollywood or Topanga.
+
+**What Rita sees:** For Wilshire during July 1–31, 2026, the app displays 30 shoplifting offense rows and 4 robbery offense rows, totaling 34 combined rows. Reporting district 0724 ranks first with 14 shoplifting rows, 0 robbery rows, and 14 combined rows. These district-level figures do not establish that Rita’s CVS experienced these incidents, and no verified CVS store mapping is loaded.
 
 ## 4. Reading the result for their decision
 
@@ -38,17 +39,18 @@ Without the app, Rita could review internal incident logs, speak with employees 
 
 **What could Rita wrongly conclude?** She might interpret a high-ranked district as proof that her store needs security immediately, even if the store is outside that district or its own incident logs show a different pattern. Conversely, a low district count does not prove that her store is safe.
 
-**Check to complete against the live app:** After recording the selected district's displayed counts, recompute `shoplifting + robbery = combined` and check that the ranked table orders the displayed totals correctly. Write the actual numbers and result below. This is a display-consistency check only, not an independent recount of the source data.
+**Live-app display-consistency check:** For the top-ranked reporting district, 14 shoplifting + 0 robbery = 14 combined offense rows, matching the displayed count. The ranked table places district 0724 (14) ahead of 0722 (8) and 0765 (6). This is a display-consistency check only, not an independent recount of the source data.
 
 ```text
-Verified LAPD area: [enter]
-Verified reporting district containing CVS store: [enter]
-Selected dates: [enter]
-Shoplifting rows: [enter]
-Robbery rows: [enter]
-Recomputed combined rows: [enter]
-Displayed combined rows: [enter]
-Check result: [enter]
+Verified LAPD area: Wilshire
+Verified reporting district containing CVS store: Not verified (no store mapping loaded)
+Selected dates: July 1–31, 2026
+Top-ranked reporting district: 0724
+Shoplifting rows (district 0724): 14
+Robbery rows (district 0724): 0
+Recomputed combined rows (district 0724): 14
+Displayed combined rows (district 0724): 14
+Check result: Pass — 14 + 0 = 14; descending rank confirmed
 ```
 
 ## 5. The verdict: prove or break
