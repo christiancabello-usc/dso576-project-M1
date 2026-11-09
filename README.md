@@ -8,8 +8,8 @@ The Regional Loss Prevention Manager at CVS Health in Los Angeles must decide ea
 https://cvs-loss-prevention-app-team1.streamlit.app/
 
 ## Demo Video
-**Watch our 5-minute walkthrough here:**
-
+**Watch our demo walkthrough here:**
+https://youtu.be/Kml-suydCWU
 
 ## Data Used
 This app uses the **LAPD NIBRS Offenses** dataset. To ensure fast loading and avoid exceeding GitHub/Streamlit memory limits, we use a pre-processed, column-filtered version of the data stored in `data/processed/`. The app reads this processed file directly. We excluded the Victims table since the tool focuses on offense counts.
