@@ -83,7 +83,10 @@ def select_controls(defaults: Defaults, area_summary: pd.DataFrame) -> tuple[lis
             y=alt.Y('AREA NAME:N', sort=area_summary['AREA NAME'].tolist(), title=None,
                     axis=alt.Axis(labelOverlap=False, labelFontSize=10)),
             color=alt.condition(alt.FieldOneOfPredicate(field='AREA NAME', oneOf=selected), alt.value(RED), alt.value(GRAY)),
-            tooltip=['AREA NAME:N', 'shoplifting_incidents:Q', 'robbery_incidents:Q', 'combined_incidents:Q']
+            tooltip=[alt.Tooltip('AREA NAME:N', title='LAPD Area'),
+                     alt.Tooltip('shoplifting_incidents:Q', title='Shoplifting offenses'),
+                     alt.Tooltip('robbery_incidents:Q', title='Robbery offenses'),
+                     alt.Tooltip('combined_incidents:Q', title='Combined offenses')]
         ).properties(height=430).configure_view(strokeWidth=0)
         st.altair_chart(chart, width='stretch')
         st.caption(CAPTION)
@@ -152,11 +155,16 @@ def render_results(ranked: pd.DataFrame, area_summary: pd.DataFrame, selected_ar
     with left:
         st.markdown(f'**Top {top_count} reporting districts**')
         styled = displayed.style.apply(lambda row: ['background-color:#fce7eb;color:#85152a;font-weight:600' if row['rank'] <= 5 and row['combined_incidents'] >= 5 else '' for _ in row], axis=1)
-        config = {'rank': st.column_config.NumberColumn('Rank', format='%d'), 'RPT Dist No': st.column_config.TextColumn('RPT Dist No'),
+        config = {'rank': st.column_config.NumberColumn('Rank', format='%d'),
+                  'AREA NAME': st.column_config.TextColumn('LAPD Area'),
+                  'RPT Dist No': st.column_config.TextColumn('LAPD reporting district'),
                   'shoplifting_incidents': st.column_config.NumberColumn('Shoplifting offenses', format='%d'),
                   'robbery_incidents': st.column_config.NumberColumn('Robbery offenses', format='%d'),
                   'combined_incidents': st.column_config.NumberColumn('Combined offenses', format='%d'),
-                  'priority_score': st.column_config.NumberColumn('Weighted priority score', format='%d')}
+                  'priority_score': st.column_config.NumberColumn('Weighted priority score', format='%d'),
+                  'candidate_store_count': st.column_config.NumberColumn('Mapped CVS stores', format='%d'),
+                  'candidate_stores': st.column_config.TextColumn('Verified CVS stores'),
+                  'Evidence': st.column_config.TextColumn('Evidence note')}
         st.dataframe(styled, hide_index=True, width='stretch', height=390, column_config=config)
         st.caption(CAPTION)
         st.download_button('Download ranked CSV', export_ranked_table(ranked, selected_areas, start, end, measure),
@@ -168,13 +176,19 @@ def render_results(ranked: pd.DataFrame, area_summary: pd.DataFrame, selected_ar
             st.info('No qualifying offenses for the selected Areas and occurrence-date window.')
         else:
             chart_rows = displayed.assign(district_label=displayed['RPT Dist No'] + displayed['Evidence'].map(lambda label: f' · {label}' if label else ''))
-            y = alt.Y('district_label:N', sort=chart_rows['district_label'].tolist(), title='RPT Dist No',
+            chart_rows['LAPD Area'] = chart_rows['AREA NAME'] if 'AREA NAME' in chart_rows else selected_areas[0]
+            y = alt.Y('district_label:N', sort=chart_rows['district_label'].tolist(), title='LAPD reporting district',
                       axis=alt.Axis(labelLimit=250))
             chart = alt.Chart(chart_rows).mark_bar(cornerRadiusEnd=3).encode(
                 y=y, x=alt.X('combined_incidents:Q', title='Combined reported offenses'),
                 color=alt.condition((alt.datum.rank <= 5) & (alt.datum.combined_incidents >= 5), alt.value(RED), alt.value(GRAY)),
-                tooltip=[alt.Tooltip('rank:Q', title='Rank'), 'AREA NAME:N', 'RPT Dist No:N',
-                         'shoplifting_incidents:Q', 'robbery_incidents:Q', 'combined_incidents:Q', 'Evidence:N']
+                tooltip=[alt.Tooltip('rank:Q', title='Rank'),
+                         alt.Tooltip('LAPD Area:N', title='LAPD Area'),
+                         alt.Tooltip('RPT Dist No:N', title='LAPD reporting district'),
+                         alt.Tooltip('shoplifting_incidents:Q', title='Shoplifting offenses'),
+                         alt.Tooltip('robbery_incidents:Q', title='Robbery offenses'),
+                         alt.Tooltip('combined_incidents:Q', title='Combined offenses'),
+                         alt.Tooltip('Evidence:N', title='Evidence note')]
             ).properties(height=350).configure_view(strokeWidth=0)
             st.altair_chart(chart, width='stretch')
         st.caption(CAPTION)
