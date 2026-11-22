@@ -144,11 +144,14 @@ def render_results(ranked: pd.DataFrame, area_summary: pd.DataFrame, selected_ar
                      column_config={'combined_incidents': 'Raw combined offenses', 'mapped_CVS_stores': 'Mapped CVS stores',
                                     'offenses_per_mapped_CVS_store': st.column_config.NumberColumn('Offenses per mapped CVS store', format='%.2f')})
     top_count = 10
-    st.markdown(f'**Red marks the first five priority districts** · ordered by **{measure.lower()}**. Counts are charged offense rows, not distinct reports.')
+    st.markdown(f'**Red marks districts ranked in the top five with at least five combined offenses** · ordered by **{measure.lower()}**. Counts are charged offense rows, not distinct reports. '
+                'Districts with fewer than five combined offenses are labeled "Limited evidence". '
+                'The five-offense threshold is a practical display rule, not a statistically validated risk threshold.')
+    displayed = ranked.assign(Evidence=ranked['combined_incidents'].map(lambda count: 'Limited evidence' if count < 5 else ''))
     left, right = st.columns([1.15, 1], gap='large')
     with left:
         st.markdown(f'**Top {top_count} reporting districts**')
-        styled = ranked.style.apply(lambda row: ['background-color:#fce7eb;color:#85152a;font-weight:600' if row['rank'] <= 5 else '' for _ in row], axis=1)
+        styled = displayed.style.apply(lambda row: ['background-color:#fce7eb;color:#85152a;font-weight:600' if row['rank'] <= 5 and row['combined_incidents'] >= 5 else '' for _ in row], axis=1)
         config = {'rank': st.column_config.NumberColumn('Rank', format='%d'), 'RPT Dist No': st.column_config.TextColumn('RPT Dist No'),
                   'shoplifting_incidents': st.column_config.NumberColumn('Shoplifting offenses', format='%d'),
                   'robbery_incidents': st.column_config.NumberColumn('Robbery offenses', format='%d'),
@@ -164,12 +167,14 @@ def render_results(ranked: pd.DataFrame, area_summary: pd.DataFrame, selected_ar
         if ranked.empty:
             st.info('No qualifying offenses for the selected Areas and occurrence-date window.')
         else:
-            y = alt.Y('RPT Dist No:N', sort=ranked['RPT Dist No'].tolist(), title='RPT Dist No')
-            chart = alt.Chart(ranked).mark_bar(cornerRadiusEnd=3).encode(
+            chart_rows = displayed.assign(district_label=displayed['RPT Dist No'] + displayed['Evidence'].map(lambda label: f' · {label}' if label else ''))
+            y = alt.Y('district_label:N', sort=chart_rows['district_label'].tolist(), title='RPT Dist No',
+                      axis=alt.Axis(labelLimit=250))
+            chart = alt.Chart(chart_rows).mark_bar(cornerRadiusEnd=3).encode(
                 y=y, x=alt.X('combined_incidents:Q', title='Combined reported offenses'),
-                color=alt.condition(alt.datum.rank <= 5, alt.value(RED), alt.value(GRAY)),
+                color=alt.condition((alt.datum.rank <= 5) & (alt.datum.combined_incidents >= 5), alt.value(RED), alt.value(GRAY)),
                 tooltip=[alt.Tooltip('rank:Q', title='Rank'), 'AREA NAME:N', 'RPT Dist No:N',
-                         'shoplifting_incidents:Q', 'robbery_incidents:Q', 'combined_incidents:Q']
+                         'shoplifting_incidents:Q', 'robbery_incidents:Q', 'combined_incidents:Q', 'Evidence:N']
             ).properties(height=350).configure_view(strokeWidth=0)
             st.altair_chart(chart, width='stretch')
         st.caption(CAPTION)
