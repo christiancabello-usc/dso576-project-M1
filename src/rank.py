@@ -12,6 +12,18 @@ RANKING_MEASURES = {
     'Weighted (robbery × 3)': ['priority_score', 'robbery_incidents', 'shoplifting_incidents'],
 }
 
+_AREA_NAMES_BY_FORMAT = {
+    **{' '.join(area.split()).casefold(): area for area in AREAS},
+    'north hollywood': 'N Hollywood',
+}
+
+
+def normalize_area_name(area: object) -> object:
+    """Return a canonical LAPD Area for known display variations only."""
+    if not isinstance(area, str):
+        return area
+    return _AREA_NAMES_BY_FORMAT.get(' '.join(area.split()).casefold(), area.strip())
+
 def _counts(rows: pd.DataFrame, key: str | list[str]) -> pd.DataFrame:
     keys = [key] if isinstance(key, str) else key
     counts = rows.groupby([*keys, 'NIBR Code']).size().unstack(fill_value=0)

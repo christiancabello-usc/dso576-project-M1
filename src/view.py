@@ -7,8 +7,8 @@ import altair as alt
 import pandas as pd
 import streamlit as st
 
-from src.rank import RANKING_MEASURES
-from src.setup import Defaults
+from src.rank import RANKING_MEASURES, normalize_area_name
+from src.setup import AREAS, Defaults
 
 CAPTION = 'Reported offenses, not actual crime. Evening = 18:00–24:00. January 2025 occurrence period excluded.'
 RED = '#b5122b'
@@ -37,7 +37,7 @@ def read_store_mapping(uploaded) -> pd.DataFrame | None:
     if missing:
         raise ValueError(f'Store mapping is missing columns: {", ".join(sorted(missing))}')
     mapping = mapping[MAPPING_COLUMNS].copy()
-    mapping['area_name'] = mapping['area_name'].str.strip()
+    mapping['area_name'] = mapping['area_name'].map(normalize_area_name).astype('string')
     mapping['rpt_dist_no'] = mapping['rpt_dist_no'].str.strip().str.zfill(4)
     return mapping.dropna(subset=['area_name', 'rpt_dist_no'])
 
@@ -73,7 +73,8 @@ def select_controls(defaults: Defaults, area_summary: pd.DataFrame) -> tuple[lis
         else:
             try:
                 mapping = read_store_mapping(uploaded)
-                st.success(f'{len(mapping):,} mapped CVS stores loaded.')
+                unmatched = (~mapping['area_name'].isin(AREAS)).sum()
+                st.success(f'{len(mapping):,} mapped CVS stores loaded, {unmatched:,} unmatched.')
             except (UnicodeDecodeError, pd.errors.ParserError, ValueError) as error:
                 st.error(f'Mapping not used: {error}')
         st.subheader('Area comparison')

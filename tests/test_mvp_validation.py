@@ -12,7 +12,7 @@ import pytest
 from src.data import load_prepared
 from src.filter import filter_offenses
 from src.rank import rank_districts, summarize_areas
-from src.setup import Defaults, load_defaults
+from src.setup import AREAS, Defaults, load_defaults
 from src.view import attach_candidate_stores, export_ranked_table, period_options, read_store_mapping
 
 SNAPSHOT = ('data/processed/offenses.parquet', 'data/processed/metadata.json')
@@ -73,6 +73,22 @@ def test_store_mapping_pads_district_and_trims_area():
         'S2,CVS Fig,2 Fig St,Central,0161\n'))
     assert mapping['rpt_dist_no'].tolist() == ['0161', '0161']
     assert mapping['area_name'].tolist() == ['Central', 'Central']
+
+
+def test_store_mapping_normalizes_known_area_formats_and_keeps_unknown_area_unmatched():
+    mapping = read_store_mapping(upload(
+        'store_id,store_name,address,area_name,rpt_dist_no\n'
+        'S1,CVS North,1 Main St,North Hollywood,123\n'
+        'S2,CVS Central,2 Main St,central,161\n'
+        'S3,CVS Unknown,3 Main St,Wrong Area,999\n'))
+    ranked = pd.DataFrame({'AREA NAME': ['N Hollywood', 'Central'],
+                           'RPT Dist No': ['0123', '0161']})
+
+    result = attach_candidate_stores(ranked, mapping)
+
+    assert result['candidate_stores'].tolist() == ['CVS North', 'CVS Central']
+    assert mapping['area_name'].tolist() == ['N Hollywood', 'Central', 'Wrong Area']
+    assert mapping['area_name'].isin(AREAS).tolist() == [True, True, False]
 
 
 def test_store_mapping_missing_column_is_rejected_with_its_name():
